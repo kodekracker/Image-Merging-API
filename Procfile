@@ -1,1 +1,1 @@
-web: gunicorn image-merging:app
+web: gunicorn --debug app:app
