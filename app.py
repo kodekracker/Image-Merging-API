@@ -34,7 +34,7 @@ def merge():
     m = Merger(foreground_url, background_url)
     m.merge_images()
     image_data = m.get_output_image(otype="Base64")
-    response = { "output_image_binary_data": image_data}
+    response = { "output_image": image_data}
     return jsonify(response), 201
 
 @app.errorhandler(500)
