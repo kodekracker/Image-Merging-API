@@ -16,26 +16,28 @@ from flask import make_response
 from flask import jsonify
 from flask import send_file
 from merger import Merger
-from StringIO import StringIO
-
 
 app = Flask(__name__)
 app.config.from_object(settings)
 
 @app.route('/api/v1.0/merge', methods=['GET','POST'])
 def merge():
-    if request.method == 'GET':
-        abort(405)
+    try:
+        if request.method == 'GET':
+            abort(405)
 
-    if not request.json or not 'foreground_url' in request.json or not 'background_url' in request.json:
-        abort(400)
-    foreground_url = request.json['foreground_url']
-    background_url = request.json['background_url']
-    m = Merger(foreground_url, background_url)
-    m.merge_images()
-    image_data = m.get_output_image(otype="Base64")
-    response = { "output_image": image_data}
-    return jsonify(response), 201
+        if not request.json or not 'foreground_url' in request.json or not 'background_url' in request.json:
+            abort(400)
+
+        foreground_url = request.json['foreground_url']
+        background_url = request.json['background_url']
+        m = Merger(foreground_url, background_url)
+        m.merge_images()
+        image_data = m.get_output_image(otype="Base64")
+        response = { "output_image": image_data}
+        return jsonify(response), 201
+    except Exception:
+        abort(500)
 
 @app.errorhandler(500)
 def internal_server_error(error):
