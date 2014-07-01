@@ -55,3 +55,6 @@ docs/_build/
 # Heroku Local Configuration Files
 .env
 
+#Local Storage of Images
+images/
+
