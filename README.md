@@ -8,7 +8,7 @@ The API is REST API and uses nothing for user authentication purposes. Currently
 ##API Resources and URI Structure
 URIs for a Image Merging REST API resource have the following structure:
 
-    http://www.example.com/api/v1.0/merge
+    http://image-merging.herokuapp.com/api/v1.0/merge
 
 Send a payload of JSON format like this:
 
@@ -25,8 +25,8 @@ This REST API return HTTP responses in JSON formats:
     {
         "output_image" : "base64 data of output image"
     }
-    
-##HTTP Error Response 
+
+##HTTP Error Response
 This REST API also return HTTP error response in JSON formats:
 
     {
@@ -39,4 +39,4 @@ Error Message may be of following types:
    *  Not Found ( HTTP Error Code : 404)
    *  Method Not Allowed ( HTTP Error Code : 405)
    *  Internal Server Error ( HTTP Error Code : 500)
- 
+
