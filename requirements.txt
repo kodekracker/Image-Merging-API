@@ -1,2 +1,6 @@
 flask
+flask-restful
+Flask-Restless
+Flask-SQLAlchemy
 pillow
+requests
