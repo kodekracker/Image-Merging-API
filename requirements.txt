@@ -4,3 +4,4 @@ Flask-Restless
 Flask-SQLAlchemy
 pillow
 requests
+gunicorn

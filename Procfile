@@ -1,1 +1,1 @@
-web: python image-merging/app.py
+web: gunicorn image-merging:app
