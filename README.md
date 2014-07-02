@@ -1,6 +1,6 @@
 #Image-Merging-API
 
-A flask based Web API to merge a two PNG images(i.e background and foreground) and it returns the output image encoded in base64.
+A Flask based Web API to merge a two PNG images(i.e may be background and foreground) and it returns the output image url and in base64 format also.
 The API is REST API and uses nothing for user authentication purposes. Currently, return format for all endpoints is [JSON](http://json.org/ "JSON").
 
 ***
@@ -8,7 +8,8 @@ The API is REST API and uses nothing for user authentication purposes. Currently
 ##API Resources and URI Structure
 URIs for a Image Merging REST API resource have the following structure:
 
-    http://image-merging.herokuapp.com/api/v1.0/merge
+    http://image-merger.herokuapp.com/api/v1.0/
+Method Supported : **POST**
 
 Send a payload of JSON format like this:
 
@@ -23,20 +24,59 @@ Send a payload of JSON format like this:
 This REST API return HTTP responses in JSON formats:
 
     {
-        "output_image" : "base64 data of output image"
+        "output_image" : { 
+            "name" : "Image Name",
+            "url" : "Image Absolute Url",
+            "base64" : "Image in base64 format"
+        }
     }
 
+You can download the merged output image through url returned in reponse.
+
 ##HTTP Error Response
-This REST API also return HTTP error response in JSON formats:
+This REST API also return HTTP error response in JSON formats with proper HTTP Status Code as follows:
 
     {
-       "Error" : "Error message"
+       "Error" : "Message"
     }
 
 Error Message may be of following types:
 
-   *  Bad Request ( HTTP Error Code : 400)
-   *  Not Found ( HTTP Error Code : 404)
-   *  Method Not Allowed ( HTTP Error Code : 405)
-   *  Internal Server Error ( HTTP Error Code : 500)
+   *  Format Not Supported ( __HTTP Status Code : 202__ )
+   *  Not Valid Url ( __HTTP Status Code : 202__ )
+   *  Images Not Found ( __HTTP Status Code : 202__ )
+   *  Internal Processing Error ( __HTTP Status Code : 202__ )
+   *  Bad Request ( __HTTP Status Code : 400__ )
+   *  Not Found ( __HTTP Status Code : 404__ )
+   *  Method Not Allowed ( __HTTP Status Code : 405__ ) 
+   *  Internal Server Error ( __HTTP Status Code : 500__ )
+
+##Example 
+Let we make a **POST** request with payload in valid format, like this:
+
+    {
+       "foreground_url" : "http://akshayon.net/images/foreground.png",
+       "background_url" : "http://akshayon.net/images/background.png"
+    }
+    
+**Foreground Image**
+![Foreground Image](http://akshayon.net/images/foreground.png "Foreground Image")
+
+**Background Image**
+![Background Image](http://akshayon.net/images/background.png "Background Image")
+
+Then , we get a response in JSON style , like this:
+
+    {
+        "output_image" : {
+            "name" : "Image Name",
+            "url" : "Image Url",
+            "base64" : "Image in base64 format"
+        }
+    }
+
+**Merged Output Image**
+![Merged Image](http://akshayon.net/images/merged.jpeg "Merged Image")
+
+
 
