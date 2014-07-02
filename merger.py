@@ -44,9 +44,23 @@ class Error(Exception):
         return repr(self.message)
 
 
+class UrlError(Error):
+    """
+        Exception raised for invalid image url.
+    """
+    pass
+
+
 class FormatError(Error):
     """
-        Exception raised for errors in invalid image format/url.
+        Exception raised for invalid image format.
+    """
+    pass
+
+
+class SizeError(Error):
+    """
+        Exception raised for image sizes not match.
     """
     pass
 
@@ -136,7 +150,7 @@ class Merger:
             output_image
 
             Raises:
-                Exception -- if any exceptions occur
+                Error -- if any error occurs
         """
         try:
             foreground = None
@@ -154,12 +168,14 @@ class Merger:
             self.output_image = Image.alpha_composite(background, foreground)
             self.save_output_image_to_directory()
 
+        except UrlError:
+            raise Error('Not a Valid Url')
         except FormatError:
-            raise Error('Not a valid format')
+            raise Error('Format not Supported')
         except RequestException:
-            raise Error('Error in Request')
+            raise Error('Images not Found')
         except Exception:
-            raise Error('Some other error')
+            raise Error('Internal Processing Error')
 
     def get_output_image(self, otype="Image"):
         """
@@ -196,7 +212,7 @@ class Merger:
 
 if __name__ == '__main__':
     try:
-        url1 = 'htp://akshayon.net/images/foreground.png'
+        url1 = 'http://akshayon.net/images/foreground.png'
         url2 = 'http://akshayon.net/images/background.png'
         m = Merger(url1, url2)
         m.merge_images()

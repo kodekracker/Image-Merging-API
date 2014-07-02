@@ -38,13 +38,15 @@ def merge():
         m = Merger(foreground_url, background_url)
         m.merge_images()
         response = {
-            'image_name': m.get_output_image('name'),
-            'image_url' : url_for('get_image', image_name = m.get_output_image('name'),_external=True),
-            'image_base64' : m.get_output_image('base64')
+            'output_image':{
+                'name': m.get_output_image('name'),
+                'url' : url_for('get_image', image_name = m.get_output_image('name'),_external=True),
+                'base64' : m.get_output_image('base64')
+            }
         }
         return jsonify(response), 201
     except Exception as e:
-        return make_response(jsonify({'Error': e.message}), 200)
+        return make_response(jsonify({'error': e.message}), 202)
 
 @app.route('/image/<string:image_name>', methods=['GET'])
 def get_image(image_name):
@@ -52,19 +54,19 @@ def get_image(image_name):
 
 @app.errorhandler(500)
 def internal_server_error(error):
-    return make_response(jsonify({'Error': 'Internal Server Error'}), 500)
+    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
 
 @app.errorhandler(405)
 def method_not_allowed(error):
-    return make_response(jsonify({'Error': 'Method Not Allowed'}), 405)
+    return make_response(jsonify({'error': 'Method Not Allowed'}), 405)
 
 @app.errorhandler(400)
 def bad_request(error):
-    return make_response(jsonify({'Error': 'Bad Request'}), 400)
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'Error': 'Not found'}), 404)
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
     app.run()
