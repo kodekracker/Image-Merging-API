@@ -24,7 +24,7 @@ app.config.from_object(settings)
 def index():
     return render_template('index.html')
 
-@app.route('/api/v1.0/merge', methods=['OPTIONS','POST'])
+@app.route('/api/v1.0/', methods=['OPTIONS','POST'])
 def merge():
     try:
         if request.method == 'OPTIONS':
