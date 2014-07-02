@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import
 import settings
+import markdown2
+from markdown2 import Markdown
 from flask import Flask
 from flask import request
 from flask import session
@@ -22,7 +24,12 @@ app.config.from_object(settings)
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    readme = ""
+    with open('README.md', 'r') as f:
+        readme = f.read()
+    markdowner= Markdown()
+    content = markdowner.convert(readme)
+    return render_template('index.html', content=content)
 
 @app.route('/api/v1.0/', methods=['OPTIONS','POST'])
 def merge():

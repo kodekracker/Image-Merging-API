@@ -1,7 +1,5 @@
 flask
-flask-restful
-Flask-Restless
-Flask-SQLAlchemy
+markdown2
 pillow
 requests
 gunicorn
