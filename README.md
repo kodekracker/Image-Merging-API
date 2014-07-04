@@ -82,5 +82,3 @@ Then , we get a response in JSON style , like this:
 **Merged Output Image**
 ![Merged Image](http://akshayon.net/images/merged.jpeg "Merged Image")
 
-
-
