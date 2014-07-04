@@ -18,7 +18,10 @@ Send a payload of JSON format like this:
        "background_url" : "image url"
     }
 
-**Note**- Request must be JSON type i.e **Content-Type : application/json**
+**Note** :
+
+  1. Request must be JSON type i.e **Content-Type : application/json**
+  2. Images should be of same sizes and of **PNG** format.
 
 ##Media Types
 This REST API return HTTP responses in JSON formats:
@@ -71,7 +74,7 @@ Then , we get a response in JSON style , like this:
     {
         "output_image" : {
             "name" : "5c359e06d7b9e4c21b699758c18ce335.jpeg",
-            "url" : "http://localhost:5000/image/5c359e06d7b9e4c21b699758c18ce335.jpeg",
+            "url" : "http://image-merger.herokuapp.com/image/5c359e06d7b9e4c21b699758c18ce335.jpeg",
             "base64" : "iVBORw0KGgoAAAANSUhEUgA.....SUVORK5CYII="
         }
     }
