@@ -89,17 +89,6 @@ def get_image(url):
             raise RequestException
 
 
-def is_image_url(url):
-    """
-        Returns true if url is in valid form else raises exception
-    """
-    if url.startswith('http://') or url.startswith('https://'):
-        imagename, ext = splitext(basename(url))
-        if ext and ext.lower() == ".png":
-            return True
-    raise FormatError()
-
-
 class Merger:
     """
         Merge two png images (i.e background and foreground)
@@ -156,11 +145,24 @@ class Merger:
             foreground = None
             background = None
 
-            if is_image_url(self.foreground_url):
-                foreground = get_image(self.foreground_url)
+            if not is_image_url(self.foreground_url):
+                raise UrlError()
 
-            if is_image_url(self.background_url):
-                background = get_image(self.background_url)
+            foreground = get_image(self.foreground_url)
+
+            if not is_image_url(self.background_url):
+                raise UrlError()
+
+            background = get_image(self.background_url)
+
+            if not is_format_match(foreground):
+                raise FormatError()
+
+            if not is_format_match(background):
+                raise FormatError()
+
+            if not is_same_size(foreground, background):
+                raise SizeError()
 
             foreground = foreground.convert('RGBA')
             background = background.convert('RGBA')
@@ -174,8 +176,10 @@ class Merger:
             raise Error('Format not Supported')
         except RequestException:
             raise Error('Images not Found')
+        except SizeError:
+            raise Error('Not Same Size Images')
         except Exception:
-            raise Error('Internal Processing Error')
+            raise Error('Internal Error. Please Try Again')
 
     def get_output_image(self, otype="Image"):
         """
@@ -208,6 +212,48 @@ class Merger:
         self.output_image_name = md5(str(uuid4())).hexdigest()+".jpeg"
         image_file = 'images/'+self.output_image_name
         self.output_image.save(image_file)
+
+
+"""
+    Basic Utility Methods needed
+"""
+def is_image_url(url):
+    """
+        Returns true if url is in valid form else false
+    """
+    print 'url checking'
+    if url.startswith('http://') or url.startswith('https://'):
+        return True
+    return False
+
+
+def is_format_match(image,formats=['PNG']):
+    """
+        Returns true if image format is matched in given formats
+        else false
+    """
+    print 'format checking'
+    for f in formats:
+        if image.format == f:
+            return True
+    return False
+
+
+def cmpTuples(t1, t2):
+    """
+        Returns true if two tuples contain same content else false
+    """
+    return len(t1) == len(t2) and set(t1) == set(t2)
+
+
+def is_same_size(img1, img2):
+    """
+        Returns true if both images have same size else false
+    """
+    print 'Size Checking'
+    img1_size = img1.size
+    img2_size = img2.size
+    return cmpTuples(img1_size, img2_size)
 
 
 if __name__ == '__main__':

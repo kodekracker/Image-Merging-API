@@ -53,11 +53,14 @@ def merge():
         }
         return jsonify(response), 201
     except Exception as e:
+        err_msg = e.message
+        if  err_msg == '':
+            err_msg = 'Internal Error. Please Try Again'
         return make_response(jsonify({'error': e.message}), 202)
 
 @app.route('/image/<string:image_name>', methods=['GET'])
 def get_image(image_name):
-    return send_from_directory(app.config['OUTPUT_IMAGES_FOLDER'], image_name, as_attachment=True)
+    return send_from_directory(app.config['OUTPUT_IMAGES_FOLDER'], image_name)
 
 @app.errorhandler(500)
 def internal_server_error(error):

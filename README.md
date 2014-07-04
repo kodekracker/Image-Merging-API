@@ -24,7 +24,7 @@ Send a payload of JSON format like this:
 This REST API return HTTP responses in JSON formats:
 
     {
-        "output_image" : { 
+        "output_image" : {
             "name" : "Image Name",
             "url" : "Image Absolute Url",
             "base64" : "Image in base64 format"
@@ -42,23 +42,24 @@ This REST API also return HTTP error response in JSON formats with proper HTTP S
 
 Error Message may be of following types:
 
-   *  Format Not Supported ( __HTTP Status Code : 202__ )
    *  Not Valid Url ( __HTTP Status Code : 202__ )
    *  Images Not Found ( __HTTP Status Code : 202__ )
-   *  Internal Processing Error ( __HTTP Status Code : 202__ )
+   *  Format Not Supported ( __HTTP Status Code : 202__ )
+   *  Not Same Size Images ( __HTTP Status Code : 202__ )
+   *  Internal Error. Please Try Again ( __HTTP Status Code : 202__ )
    *  Bad Request ( __HTTP Status Code : 400__ )
    *  Not Found ( __HTTP Status Code : 404__ )
-   *  Method Not Allowed ( __HTTP Status Code : 405__ ) 
+   *  Method Not Allowed ( __HTTP Status Code : 405__ )
    *  Internal Server Error ( __HTTP Status Code : 500__ )
 
-##Example 
+##Example
 Let we make a **POST** request with payload in valid format, like this:
 
     {
        "foreground_url" : "http://akshayon.net/images/foreground.png",
        "background_url" : "http://akshayon.net/images/background.png"
     }
-    
+
 **Foreground Image**
 ![Foreground Image](http://akshayon.net/images/foreground.png "Foreground Image")
 
@@ -69,9 +70,9 @@ Then , we get a response in JSON style , like this:
 
     {
         "output_image" : {
-            "name" : "Image Name",
-            "url" : "Image Url",
-            "base64" : "Image in base64 format"
+            "name" : "5c359e06d7b9e4c21b699758c18ce335.jpeg",
+            "url" : "http://localhost:5000/image/5c359e06d7b9e4c21b699758c18ce335.jpeg",
+            "base64" : "iVBORw0KGgoAAAANSUhEUgA.....SUVORK5CYII="
         }
     }
 
