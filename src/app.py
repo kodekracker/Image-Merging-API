@@ -44,8 +44,8 @@ def merge():
         }
         return jsonify(response), 201
     except Exception as e:
-        err_msg = getattr(e, 'message')
-        if err_msg == '':
+        err_msg = getattr(e, 'message', None)
+        if not err_msg:
             err_msg = 'Internal Error. Please Try Again'
         return make_response(jsonify({'error': err_msg}), 500)
 

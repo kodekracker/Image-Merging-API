@@ -9,6 +9,7 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = 'this-really-needs-to-be-changed'
     OUTPUT_IMAGES_FOLDER = 'images'
+    BASE_DIR = basedir
 
 
 class Production(Config):

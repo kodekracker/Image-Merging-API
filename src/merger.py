@@ -60,9 +60,15 @@ class SizeError(Error):
     pass
 
 
-def get_image(url):
+DEFAULT_REQUEST_TIMEOUT = 30
+DEFAULT_REQUEST_UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (' \
+                     'KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
+DEFAULT_REQUEST_RETRY = 5
+
+
+def get_image_by_url(url):
     """
-        Return Image object after downloading the image via Url
+        Return PIL Image object after downloading the image via Url
 
         Parameters:
             url -- an url of png image
@@ -73,9 +79,14 @@ def get_image(url):
         Raises:
             RequestException -- if there is problem in connection
     """
+    retry_count = 0
     while True:
         try:
-            r = requests.get(url, stream=True)
+            req_headers = {
+                'User-Agent': DEFAULT_REQUEST_UA
+            }
+            r = requests.get(url, headers=req_headers, stream=True,
+                             timeout=DEFAULT_REQUEST_TIMEOUT)
             image_data = r.content
             if isinstance(image_data, bytes):
                 image_data = BytesIO(image_data)
@@ -84,11 +95,14 @@ def get_image(url):
 
             im = Image.open(image_data)
             return im
-        except Timeout:
-            continue
-        except Exception as err:
-            logging.exception(err)
-            raise RequestException(err)
+        except Timeout as e:
+            if retry_count <= DEFAULT_REQUEST_RETRY:
+                continue
+            else:
+                raise e
+        except Exception as e:
+            logging.exception(e)
+            raise RequestException(e)
 
 
 class Merger:
@@ -148,12 +162,12 @@ class Merger:
             if not is_image_url(self.foreground_url):
                 raise UrlError('`foreground_url` is not valid url')
 
-            foreground = get_image(self.foreground_url)
+            foreground = get_image_by_url(self.foreground_url)
 
             if not is_image_url(self.background_url):
                 raise UrlError('`background_url` is not valid url')
 
-            background = get_image(self.background_url)
+            background = get_image_by_url(self.background_url)
 
             if not is_format_match(foreground):
                 raise FormatError(
@@ -181,7 +195,8 @@ class Merger:
             raise Error('Images not found. Please check image urls')
         except SizeError:
             raise Error('Not same size images')
-        except Exception:
+        except Exception as e:
+            logger.exception(e)
             raise Error('Internal Error. Please Try Again')
 
     def get_output_image(self, o_type='Image'):
@@ -197,9 +212,11 @@ class Merger:
         if o_type == 'image':
             return self.output_image
         elif o_type == 'base64':
-            return base64.b64encode(self.get_output_image(o_type='String'))
+            image_data = self.get_output_image(o_type='String')
+            encoded_image_data = base64.b64encode(image_data)
+            return encoded_image_data.decode()
         elif o_type == 'string':
-            img_io = StringIO()
+            img_io = BytesIO()
             self.output_image.save(img_io, 'PNG')
             img_io.seek(0)
             return img_io.getvalue()
@@ -209,10 +226,11 @@ class Merger:
             Saves the output_image to images/ directory
         """
         curr_directory = os.path.dirname(os.path.abspath(__file__))
-        path = curr_directory + '/images/'
-        if not os.path.exists(path):
-            os.makedirs(path)
-        self.output_image_name = md5(str(uuid4())).hexdigest() + '.jpeg'
-        image_file = 'images/' + self.output_image_name
-        self.output_image.save(image_file)
-        logger.info('Image file saved locally : %s', image_file)
+        images_dir = curr_directory + '/images/'
+        if not os.path.exists(images_dir):
+            os.makedirs(images_dir)
+        self.output_image_name = md5(
+            str(uuid4()).encode()).hexdigest() + '.png'
+        image_file_name = images_dir + self.output_image_name
+        self.output_image.save(image_file_name)
+        logger.info('Image file saved locally : %s', image_file_name)
