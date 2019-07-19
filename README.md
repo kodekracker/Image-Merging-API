@@ -1,11 +1,10 @@
-#Image-Merger-API V1.0
+Image-Merger-API
+-----------------------
 
 A Flask based Web API to merge a two PNG images(i.e may be background and foreground) and it returns the output image url and in base64 format also.
 The API is REST API and uses nothing for user authentication purposes. Currently, return format for all endpoints is [JSON](http://json.org/ "JSON").
 
-***
-
-##API Resources and URI Structure
+## API Resources and URI Structure
 URIs for a Image Merging REST API resource have the following structure:
 
     http://image-merger.herokuapp.com/api/v1.0/
@@ -23,7 +22,7 @@ Send a payload of JSON format like this:
   1. Request must be JSON type i.e **Content-Type : application/json**
   2. Images should be of same sizes and of **PNG** format.
 
-##Media Types
+## Media Types
 This REST API return HTTP responses in JSON formats:
 
     {
@@ -36,7 +35,7 @@ This REST API return HTTP responses in JSON formats:
 
 You can download the merged output image through url returned in reponse.
 
-##HTTP Error Response
+## HTTP Error Response
 This REST API also return HTTP error response in JSON formats with proper HTTP Status Code as follows:
 
     {
@@ -55,7 +54,7 @@ Error Message may be of following types:
    *  Method Not Allowed ( __HTTP Status Code : 405__ )
    *  Internal Server Error ( __HTTP Status Code : 500__ )
 
-##Example
+## Example
 Let we make a **POST** request with payload in valid format, like this:
 
     {

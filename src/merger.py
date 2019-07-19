@@ -8,26 +8,20 @@
     image of given url.
 """
 
-import requests
 import base64
+import logging
 import os
-from os.path import splitext
-from os.path import basename
-from StringIO import StringIO
-from PIL import Image
-from requests.exceptions import Timeout
-from requests.exceptions import RequestException
+from hashlib import md5
+from io import BytesIO, StringIO
 from uuid import uuid4
-from md5 import md5
 
-__author__ = "Akshay Pratap Singh"
-__copyright__ = "Copyright 2014, Ophio Project"
-__credits__ = ["Saurabh Kumar"]
-__license__ = "MIT"
-__version__ = "1.0.1"
-__maintainer__ = "Akshay Pratap Singh"
-__email__ = "pratapakshay0@gmail.com"
-__status__ = "Development"
+import requests
+from PIL import Image
+from requests.exceptions import RequestException, Timeout
+
+from .utils import (is_format_match, is_image_url, is_same_size)
+
+logger = logging.getLogger(__name__)
 
 
 class Error(Exception):
@@ -37,6 +31,7 @@ class Error(Exception):
         Attributes:
             message -- explanation of the error
     """
+
     def __init__(self, message=''):
         self.message = message
 
@@ -80,13 +75,20 @@ def get_image(url):
     """
     while True:
         try:
-            r = requests.get(url,stream=True)
-            im = Image.open(StringIO(r.content))
+            r = requests.get(url, stream=True)
+            image_data = r.content
+            if isinstance(image_data, bytes):
+                image_data = BytesIO(image_data)
+            else:
+                image_data = StringIO(image_data)
+
+            im = Image.open(image_data)
             return im
         except Timeout:
             continue
-        except Exception:
-            raise RequestException
+        except Exception as err:
+            logging.exception(err)
+            raise RequestException(err)
 
 
 class Merger:
@@ -106,6 +108,7 @@ class Merger:
             get_output_image -- gets the output_image in different types
             save_output_image_to_directory -- save output_image to directory
     """
+
     def __init__(self, fore_url=None, back_url=None):
         """
             Sets the foreground_url and background_url
@@ -115,7 +118,7 @@ class Merger:
         self.output_image = None
         self.output_image_name = None
 
-    def set_foreground(self,url):
+    def set_foreground(self, url):
         """
             Sets the foreground_url
 
@@ -124,7 +127,7 @@ class Merger:
         """
         self.foreground_url = url
 
-    def set_background(self,url):
+    def set_background(self, url):
         """
             Sets the background_url
 
@@ -142,27 +145,27 @@ class Merger:
                 Error -- if any error occurs
         """
         try:
-            foreground = None
-            background = None
-
             if not is_image_url(self.foreground_url):
-                raise UrlError()
+                raise UrlError('`foreground_url` is not valid url')
 
             foreground = get_image(self.foreground_url)
 
             if not is_image_url(self.background_url):
-                raise UrlError()
+                raise UrlError('`background_url` is not valid url')
 
             background = get_image(self.background_url)
 
             if not is_format_match(foreground):
-                raise FormatError()
+                raise FormatError(
+                    "`foreground_url` image is not of PNG format")
 
             if not is_format_match(background):
-                raise FormatError()
+                raise FormatError(
+                    "`foreground_url` image is not of PNG format")
 
             if not is_same_size(foreground, background):
-                raise SizeError()
+                raise SizeError('`foreground_url` and `foreground_url` '
+                                'images are of different size')
 
             foreground = foreground.convert('RGBA')
             background = background.convert('RGBA')
@@ -171,31 +174,31 @@ class Merger:
             self.save_output_image_to_directory()
 
         except UrlError:
-            raise Error('Not a Valid Url')
+            raise Error('Not a valid image url')
         except FormatError:
-            raise Error('Format not Supported')
+            raise Error('Format not supported')
         except RequestException:
-            raise Error('Images not Found')
+            raise Error('Images not found. Please check image urls')
         except SizeError:
-            raise Error('Not Same Size Images')
+            raise Error('Not same size images')
         except Exception:
             raise Error('Internal Error. Please Try Again')
 
-    def get_output_image(self, otype="Image"):
+    def get_output_image(self, o_type='Image'):
         """
             Gets the output(i.e merged) image
 
             Attributes:
-                otype -- tells the return type of output_image
+                o_type -- tells the return type of output_image
         """
-        otype = otype.lower()
-        if otype == "name":
+        o_type = o_type.lower()
+        if o_type == 'name':
             return self.output_image_name
-        if otype == "image":
+        if o_type == 'image':
             return self.output_image
-        elif otype == "base64":
-            return base64.b64encode(self.get_output_image(otype="String"))
-        elif otype == "string":
+        elif o_type == 'base64':
+            return base64.b64encode(self.get_output_image(o_type='String'))
+        elif o_type == 'string':
             img_io = StringIO()
             self.output_image.save(img_io, 'PNG')
             img_io.seek(0)
@@ -206,62 +209,10 @@ class Merger:
             Saves the output_image to images/ directory
         """
         curr_directory = os.path.dirname(os.path.abspath(__file__))
-        path = curr_directory + "/images/"
+        path = curr_directory + '/images/'
         if not os.path.exists(path):
             os.makedirs(path)
-        self.output_image_name = md5(str(uuid4())).hexdigest()+".jpeg"
-        image_file = 'images/'+self.output_image_name
+        self.output_image_name = md5(str(uuid4())).hexdigest() + '.jpeg'
+        image_file = 'images/' + self.output_image_name
         self.output_image.save(image_file)
-
-
-"""
-    Basic Utility Methods needed
-"""
-def is_image_url(url):
-    """
-        Returns true if url is in valid form else false
-    """
-    print 'url checking'
-    if url.startswith('http://') or url.startswith('https://'):
-        return True
-    return False
-
-
-def is_format_match(image,formats=['PNG']):
-    """
-        Returns true if image format is matched in given formats
-        else false
-    """
-    print 'format checking'
-    for f in formats:
-        if image.format == f:
-            return True
-    return False
-
-
-def cmpTuples(t1, t2):
-    """
-        Returns true if two tuples contain same content else false
-    """
-    return len(t1) == len(t2) and set(t1) == set(t2)
-
-
-def is_same_size(img1, img2):
-    """
-        Returns true if both images have same size else false
-    """
-    print 'Size Checking'
-    img1_size = img1.size
-    img2_size = img2.size
-    return cmpTuples(img1_size, img2_size)
-
-
-if __name__ == '__main__':
-    try:
-        url1 = 'http://akshayon.net/images/foreground.png'
-        url2 = 'http://akshayon.net/images/background.png'
-        m = Merger(url1, url2)
-        m.merge_images()
-        m.get_output_image(otype="Image").show()
-    except Exception as e:
-        print 'Error : ', e.message
+        logger.info('Image file saved locally : %s', image_file)
