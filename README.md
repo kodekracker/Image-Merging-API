@@ -38,7 +38,7 @@ A Flask based Web API to merge a two PNG images(i.e may be background and foregr
 URIs for a Image Merging REST API resource have the following structure:
 
 ```text
-http://image-merger.herokuapp.com/api/v1.0/
+https://image-merger.herokuapp.com/api/v1.0/merge-images/
 ```
 
 Method Supported : **POST**
@@ -101,16 +101,16 @@ Let we make a **POST** request with payload in valid format, like this:
 
 ```json
 {
-    "foreground_url" : "http://akshayon.net/images/foreground.png",
-    "background_url" : "http://akshayon.net/images/background.png"
+    "foreground_url" : "https://image-merger.herokuapp.com/static/img/foreground.png",
+    "background_url" : "https://image-merger.herokuapp.com/static/img/background.png"
 }
 ```
 
 **Foreground Image**
-![Foreground Image](http://akshayon.net/images/foreground.png "Foreground Image")
+![Foreground Image](https://image-merger.herokuapp.com/static/img/foreground.png "Foreground Image")
 
 **Background Image**
-![Background Image](http://akshayon.net/images/background.png "Background Image")
+![Background Image](https://image-merger.herokuapp.com/static/img/background.png "Background Image")
 
 Then , we get a response in JSON style , like this:
 
@@ -118,7 +118,7 @@ Then , we get a response in JSON style , like this:
 {
     "output_image" : {
         "name" : "5c359e06d7b9e4c21b699758c18ce335.jpeg",
-        "url" : "http://image-merger.herokuapp.com/image/5c359e06d7b9e4c21b699758c18ce335.jpeg",
+        "url" : "https://image-merger.herokuapp.com/merged-images/5c359e06d7b9e4c21b699758c18ce335.jpeg",
         "base64" : "iVBORw0KGgoAAAANSUhEUgA.....SUVORK5CYII="
     }
 }

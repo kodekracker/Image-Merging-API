@@ -29,7 +29,7 @@ def index():
     return render_template("index.html", content=readme_html)
 
 
-@app.route("/api/v1.0/", methods=["OPTIONS", "POST"])
+@app.route("/api/v1.0/merge-images/", methods=["OPTIONS", "POST"])
 def merge():
     if request.method == "OPTIONS":
         return make_response(jsonify({"Allow": "POST"}), 200)
@@ -60,7 +60,7 @@ def merge():
         return make_response(jsonify({"error": err_msg}), 500)
 
 
-@app.route("/image/<string:image_name>", methods=["GET"])
+@app.route("/merged-images/<string:image_name>", methods=["GET"])
 def get_image(image_name):
     return send_from_directory(app.config["OUTPUT_IMAGES_FOLDER"], image_name)
 
