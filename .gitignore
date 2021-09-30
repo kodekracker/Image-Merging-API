@@ -58,3 +58,7 @@ docs/_build/
 #Local Storage of Images
 images/
 
+# Virtual Environments
+.venv/
+venv/
+
