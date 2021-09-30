@@ -107,10 +107,12 @@ Let we make a **POST** request with payload in valid format, like this:
 ```
 
 **Foreground Image**
-![Foreground Image](https://image-merger.herokuapp.com/static/img/foreground.png "Foreground Image")
+
+<img src="https://image-merger.herokuapp.com/static/img/foreground.png" alt="Foreground Image" style="width:200px;"/>
 
 **Background Image**
-![Background Image](https://image-merger.herokuapp.com/static/img/background.png "Background Image")
+
+<img src="https://image-merger.herokuapp.com/static/img/background.png" alt="Background Image" style="width:200px;"/>
 
 Then , we get a response in JSON style , like this:
 
@@ -125,4 +127,5 @@ Then , we get a response in JSON style , like this:
 ```
 
 **Merged Output Image**
-![Merged Image](http://akshayon.net/images/merged.jpeg "Merged Image")
+
+<img src="https://image-merger.herokuapp.com/static/img/merged.png" alt="Merged Image" style="width:200px;"/>
