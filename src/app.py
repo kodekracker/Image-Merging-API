@@ -10,7 +10,7 @@ from flask import (
     send_from_directory,
     url_for,
 )
-from markdown2 import Markdown
+from gh_md_to_html.core_converter import markdown
 
 from .merger import Merger
 
@@ -24,10 +24,9 @@ app.config.from_object(os.environ["APP_SETTINGS"])
 @app.route("/", methods=["GET"])
 def index():
     with open("README.md", "r") as f:
-        readme = f.read()
-    markdown = Markdown()
-    content = markdown.convert(readme)
-    return render_template("index.html", content=content)
+        readme_md = f.read()
+    readme_html = markdown(readme_md)
+    return render_template("index.html", content=readme_html)
 
 
 @app.route("/api/v1.0/", methods=["OPTIONS", "POST"])

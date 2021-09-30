@@ -7,4 +7,4 @@ __maintainer__ = "Akshay Pratap Singh"
 __email__ = "pratapakshay0@gmail.com"
 __status__ = "Development"
 
-from .app import app
+from .app import app  # noqa

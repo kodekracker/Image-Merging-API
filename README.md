@@ -1,4 +1,4 @@
-# Image-Merger-API
+# Image Merger API
 
 A Flask based Web API to merge a two PNG images(i.e may be background and foreground) and it returns the output image url and in base64 format also. The API is REST API and uses nothing for user authentication purposes. Currently, return format for all endpoints is [JSON](http://json.org/ "JSON").
 
