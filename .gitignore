@@ -62,3 +62,5 @@ images/
 .venv/
 venv/
 
+# General
+.vscode/settings.json
