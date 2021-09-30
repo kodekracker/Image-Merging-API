@@ -31,7 +31,7 @@ A Flask based Web API to merge a two PNG images(i.e may be background and foregr
     gunicorn run:app
     ```
 
-    Please note, always set `FLASK_ENV=Production` and `APP_SETTINGS=config.Development` in `.env` file.
+    Please note, always set `FLASK_ENV=Production` and `APP_SETTINGS=config.Production` in `.env` file.
 
 ## API Resources and URI Structure
 
