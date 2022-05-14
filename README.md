@@ -5,7 +5,7 @@ A Flask based Web API to merge a two PNG images(i.e may be background and foregr
 ## Instructions
 
 1. Clone repository to local machine and go to project directory
-1. Setup virtual environment based on `python3.7.X` and activate it
+1. Setup virtual environment based on `python3.8.X` and activate it
 1. Install all project's python depenedencies
 
     ```bash
@@ -28,7 +28,7 @@ A Flask based Web API to merge a two PNG images(i.e may be background and foregr
 1. To run in production mode, use `gunicorn` app server
 
     ```bash
-    gunicorn run:app
+    gunicorn app:app
     ```
 
     Please note, always set `FLASK_ENV=Production` and `APP_SETTINGS=config.Production` in `.env` file.
