@@ -1,5 +1,5 @@
 autoenv==1.0.0
-Flask==2.1.2
+Flask==2.3.2
 gh-md-to-html==1.21.1
 gunicorn==19.9.0
 mistune==2.0.0rc1
